@@ -29,10 +29,8 @@ export class DomainStack extends Stack {
 
     const { config } = props;
 
-    const subdomain = `${config.subdomainPart}.${config.domainName}`;
-
     const queryLogGroup = new logs.LogGroup(this, 'LogGroup', {
-      logGroupName: `/aws/route53/${subdomain}`,
+      logGroupName: `/aws/route53/${config.domainName}`,
       retention: RetentionDays.THREE_DAYS,
       removalPolicy: RemovalPolicy.DESTROY,
     });
@@ -90,7 +88,7 @@ export class DomainStack extends Stack {
        * the IP updates.
        */
       ttl: Duration.seconds(30),
-      recordName: subdomain,
+      recordName: config.domainName,
       zone: subdomainHostedZone,
     });
 
@@ -128,7 +126,7 @@ export class DomainStack extends Stack {
      */
     queryLogGroup.addSubscriptionFilter('SubscriptionFilter', {
       destination: new logDestinations.LambdaDestination(launcherLambda),
-      filterPattern: logs.FilterPattern.anyTerm(subdomain),
+      filterPattern: logs.FilterPattern.anyTerm(config.domainName),
     });
 
     /**
