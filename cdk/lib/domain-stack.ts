@@ -64,29 +64,17 @@ export class DomainStack extends Stack {
       { policyName, statements: dnsWriteToCw }
     );
 
-    const rootHostedZone = route53.HostedZone.fromLookup(this, 'HostedZone', {
-      domainName: config.domainName,
-    });
-
     const subdomainHostedZone = new route53.HostedZone(
       this,
       'SubdomainHostedZone',
       {
-        zoneName: subdomain,
+        zoneName: config.domainName,
         queryLogsLogGroupArn: queryLogGroup.logGroupArn,
       }
     );
 
     /* Resource policy for CloudWatch Logs is needed before the zone can be created */
     subdomainHostedZone.node.addDependency(cloudwatchLogResourcePolicy);
-    /* Ensure we hvae an existing hosted zone before creating our delegated zone */
-    subdomainHostedZone.node.addDependency(rootHostedZone);
-
-    const nsRecord = new route53.NsRecord(this, 'NSRecord', {
-      zone: rootHostedZone,
-      values: subdomainHostedZone.hostedZoneNameServers as string[],
-      recordName: subdomain,
-    });
 
     const aRecord = new route53.ARecord(this, 'ARecord', {
       target: {
