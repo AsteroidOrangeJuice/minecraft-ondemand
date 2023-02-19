@@ -223,11 +223,7 @@ export class MinecraftStack extends Stack {
       'WatchDogContainer',
       {
         containerName: constants.WATCHDOG_SERVER_CONTAINER_NAME,
-        image: isDockerInstalled()
-          ? ecs.ContainerImage.fromAsset(
-              path.resolve(__dirname, '../../minecraft-ecsfargate-watchdog/')
-            )
-          : ecs.ContainerImage.fromRegistry(
+        image: ecs.ContainerImage.fromRegistry(
               'doctorray/minecraft-ecsfargate-watchdog'
             ),
         essential: true,
@@ -236,7 +232,7 @@ export class MinecraftStack extends Stack {
           CLUSTER: constants.CLUSTER_NAME,
           SERVICE: constants.SERVICE_NAME,
           DNSZONE: hostedZoneId,
-          SERVERNAME: `${config.subdomainPart}.${config.domainName}`,
+          SERVERNAME: config.domainName,
           SNSTOPIC: snsTopicArn,
           TWILIOFROM: config.twilio.phoneFrom,
           TWILIOTO: config.twilio.phoneTo,
