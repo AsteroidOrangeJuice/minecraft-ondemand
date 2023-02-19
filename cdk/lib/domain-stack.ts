@@ -103,6 +103,7 @@ export class DomainStack extends Stack {
         REGION: config.serverRegion,
         CLUSTER: constants.CLUSTER_NAME,
         SERVICE: constants.SERVICE_NAME,
+        ENABLED: `${config.enabled}`,
       },
       logRetention: logs.RetentionDays.THREE_DAYS, // TODO: parameterize
     });

@@ -145,6 +145,11 @@ export interface StackConfig {
    * - CloudWatch Logs for the `minecraft-ecsfargate-watchdog` ECS Container
    */
   debug: boolean;
+
+  /**
+   * If false, the server will not be scaled up.
+   */
+  enabled: boolean;
 }
 
 export interface MinecraftEditionConfig {

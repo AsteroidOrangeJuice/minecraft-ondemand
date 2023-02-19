@@ -8,6 +8,8 @@ DEFAULT_SERVICE = 'minecraft-server'
 REGION = os.environ.get('REGION', DEFAULT_REGION)
 CLUSTER = os.environ.get('CLUSTER', DEFAULT_CLUSTER)
 SERVICE = os.environ.get('SERVICE', DEFAULT_SERVICE)
+ENABLED_STR = os.environ.get('ENABLED')
+ENABLED = True if ENABLED_STR.upper() == "TRUE" else False
 
 if REGION is None or CLUSTER is None or SERVICE is None:
     raise ValueError("Missing environment variables")
@@ -15,6 +17,10 @@ if REGION is None or CLUSTER is None or SERVICE is None:
 
 def lambda_handler(event, context):
     """Updates the desired count for a service."""
+
+    if not ENABLED:
+        print("server disabled. not updating desired count.")
+        return
 
     ecs = boto3.client('ecs', region_name=REGION)
     response = ecs.describe_services(
